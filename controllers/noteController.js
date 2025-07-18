@@ -13,7 +13,7 @@ import {
     updateNoteService,
 } from "../services/noteServices.js";
 
-import asyncHandlerMiddleware from "../Middlewares/asyncHolderMiddleware.js";
+import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
 import { createNoteSchema, updateNoteSchema } from "../validators/noteValidators.js";
 import validateId from "../helpers/validateId.js";
 
@@ -172,7 +172,7 @@ export const getNoteByIdController = asyncHandlerMiddleware(async (req, res) => 
     const userId = req.user.id;
     const noteId = req.params.id;
     const noteById = await getNoteByIdService(noteId, userId);
-    
+
     if (!noteById) {
         return res.status(404).json({
             success: false,

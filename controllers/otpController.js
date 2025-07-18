@@ -1,4 +1,4 @@
-import asyncHandlerMiddleware from "../Middlewares/asyncHolderMiddleware.js";
+import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
 import { storeOtpInDb, sendOtpToEmail, verifyOtp } from "../services/otpServices.js";
 import generateOtp from "../utils/generateOtp.js";
 

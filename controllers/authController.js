@@ -1,4 +1,4 @@
-import asyncHandlerMiddleware from "../Middlewares/asyncHolderMiddleware.js";
+import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
 import * as authServices from "../services/authServices.js"
 import { signupSchema, loginSchema } from "../validators/authValidators.js";
 import generateTokens from "../utils/generateToken.js";
