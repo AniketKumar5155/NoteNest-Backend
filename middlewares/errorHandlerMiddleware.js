@@ -4,8 +4,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         success: false,
         message: err.message || "Internal server error",
         errordata: err
-
     })
 }
 
-export default errorHandlerMiddleware
+module.exports = errorHandlerMiddleware;

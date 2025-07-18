@@ -1,6 +1,6 @@
-import { Model, DataTypes } from "sequelize";
+const { Model, DataTypes } = require("sequelize");
 
-export default (sequelize) => {
+module.exports = (sequelize) => {
   class Token extends Model {
     static associate(models) {
       Token.belongsTo(models.User, {
@@ -50,5 +50,5 @@ export default (sequelize) => {
     }
   );
 
-  return Token; 
+  return Token;
 };

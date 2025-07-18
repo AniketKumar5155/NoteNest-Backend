@@ -5,7 +5,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{
 const passwordMessage =
     "Password must be at least 8 characters and include: 1 uppercase, 1 lowercase, 1 number, and 1 special character (!@#$%^&*()_+-=[]{}|;:',.<>/?)";
 
-export const signupSchema = z.object({
+const signupSchema = z.object({
         first_name: z
             .string({ required_error: "First name is required" })
             .min(2, "First name must be at least 2 characters")
@@ -41,7 +41,7 @@ export const signupSchema = z.object({
         path: ["confirm_password"],
     });
 
-export const loginSchema = z.object({
+const loginSchema = z.object({
     identifier: z
         .string({ required_error: "Username or email is required" })
         .min(3, "Must be at least 3 characters"),
@@ -50,3 +50,10 @@ export const loginSchema = z.object({
         .string({ required_error: "Password is required" })
         .regex(passwordRegex, passwordMessage),
 });
+
+const authValidators = {
+    signupSchema,
+    loginSchema,
+};
+
+module.exports = authValidators;

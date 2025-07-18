@@ -1,10 +1,10 @@
 // models/index.js
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-import UserModel from './user.js';
-import TokenModel from './token.js';
-import OtpModel from './otp.js';
-import NoteModel from './note.js'; // if you have it
+const { Sequelize } = require('sequelize');
+const dotenv = require('dotenv');
+const UserModel = require('./user.js');
+const TokenModel = require('./token.js');
+const OtpModel = require('./otp.js');
+const NoteModel = require('./note.js'); // if you have it
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ Token.associate?.({ User });
 Otp.associate?.({ User });
 Note.associate?.({ User });
 
-export {
+module.exports = {
   sequelize,
   Sequelize, 
   User,

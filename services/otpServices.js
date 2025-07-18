@@ -1,10 +1,10 @@
-import bcrypt from "bcryptjs";
-import generateOtp from "../utils/generateOtp.js";
-import sendEmail from "../utils/sendEmail.js";
-import hashData from "../utils/hashData.js";
-import { Otp, User } from "../models/index.js";
+const bcrypt = require("bcryptjs");
+const generateOtp = require("../utils/generateOtp.js");
+const sendEmail = require("../utils/sendEmail.js");
+const hashData = require("../utils/hashData.js");
+const { Otp, User } = require("../models/index.js");
 
-export const sendOtpToEmail = async (otp, email) => {
+exports.sendOtpToEmail = async (otp, email) => {
   await sendEmail({
     to: email,
     subject: "Verify your Email",
@@ -12,7 +12,7 @@ export const sendOtpToEmail = async (otp, email) => {
   });
 };
 
-export const storeOtpInDb = async (otp, { email, user_id }, expiresAt) => {
+exports.storeOtpInDb = async (otp, { email, user_id }, expiresAt) => {
   let finalEmail = email;
 
   // If user_id is provided but not email, fetch from user table
@@ -46,7 +46,7 @@ export const storeOtpInDb = async (otp, { email, user_id }, expiresAt) => {
   });
 };
 
-export const getOtpForSignup = async (email) => {
+exports.getOtpForSignup = async (email) => {
   try {
     if (!email || typeof email !== "string") {
       throw new Error("A valid email is required to send OTP.");
@@ -68,7 +68,7 @@ export const getOtpForSignup = async (email) => {
   }
 };
 
-export const verifyOtp = async (otp, { email, user_id }) => {
+exports.verifyOtp = async (otp, { email, user_id }) => {
   try {
     if (!otp || typeof otp !== "string") {
       throw new Error("A valid OTP is required.");

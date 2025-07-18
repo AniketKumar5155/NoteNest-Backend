@@ -1,4 +1,4 @@
-import {
+const {
     archiveNoteService,
     createNoteService,
     getActiveNotesService,
@@ -11,13 +11,13 @@ import {
     softDeleteNoteService,
     unArchiveNoteService,
     updateNoteService,
-} from "../services/noteServices.js";
+} = require("../services/noteServices.js");
 
-import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
-import { createNoteSchema, updateNoteSchema } from "../validators/noteValidators.js";
-import validateId from "../helpers/validateId.js";
+const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
+const { createNoteSchema, updateNoteSchema } = require("../validators/noteValidators.js");
+const validateId = require("../helpers/validateId.js");
 
-export const createNoteController = asyncHandlerMiddleware(async (req, res) => {
+exports.createNoteController = asyncHandlerMiddleware(async (req, res) => {
     const validatedData = createNoteSchema.parse(req.body);
     const userId = req.user.id;
 
@@ -30,7 +30,7 @@ export const createNoteController = asyncHandlerMiddleware(async (req, res) => {
     });
 });
 
-export const updateNoteController = asyncHandlerMiddleware(async (req, res) => {
+exports.updateNoteController = asyncHandlerMiddleware(async (req, res) => {
     const validatedData = updateNoteSchema.parse(req.body)
     const noteId = req.params.id;
     const userId = req.user.id;
@@ -52,7 +52,7 @@ export const updateNoteController = asyncHandlerMiddleware(async (req, res) => {
     });
 });
 
-export const softDeleteNotesController = asyncHandlerMiddleware(async (req, res) => {
+exports.softDeleteNotesController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const userId = req.user.id;
 
@@ -73,7 +73,7 @@ export const softDeleteNotesController = asyncHandlerMiddleware(async (req, res)
     });
 });
 
-export const restoreNotesController = asyncHandlerMiddleware(async (req, res) => {
+exports.restoreNotesController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const userId = req.user.id;
 
@@ -94,7 +94,7 @@ export const restoreNotesController = asyncHandlerMiddleware(async (req, res) =>
     });
 });
 
-export const hardDeleteNoteController = asyncHandlerMiddleware(async (req, res) => {
+exports.hardDeleteNoteController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const userId = req.user.id;
 
@@ -113,7 +113,7 @@ export const hardDeleteNoteController = asyncHandlerMiddleware(async (req, res) 
     });
 });
 
-export const archiveNoteController = asyncHandlerMiddleware(async (req, res) => {
+exports.archiveNoteController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const userId = req.user.id;
 
@@ -134,7 +134,7 @@ export const archiveNoteController = asyncHandlerMiddleware(async (req, res) => 
     });
 });
 
-export const unarchiveNoteController = asyncHandlerMiddleware(async (req, res) => {
+exports.unarchiveNoteController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const userId = req.user.id;
 
@@ -155,7 +155,7 @@ export const unarchiveNoteController = asyncHandlerMiddleware(async (req, res) =
     });
 });
 
-export const getAllActiveNotesController = asyncHandlerMiddleware(async (req, res) => {
+exports.getAllActiveNotesController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
 
     const notes = await getActiveNotesService(userId);
@@ -168,7 +168,7 @@ export const getAllActiveNotesController = asyncHandlerMiddleware(async (req, re
     });
 });
 
-export const getNoteByIdController = asyncHandlerMiddleware(async (req, res) => {
+exports.getNoteByIdController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
     const noteId = req.params.id;
     const noteById = await getNoteByIdService(noteId, userId);
@@ -188,7 +188,7 @@ export const getNoteByIdController = asyncHandlerMiddleware(async (req, res) => 
     });
 });
 
-export const getNoteBytitleController = asyncHandlerMiddleware(async (req, res) => {
+exports.getNoteBytitleController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
     const noteTitle = req.params.title;
 
@@ -217,7 +217,7 @@ export const getNoteBytitleController = asyncHandlerMiddleware(async (req, res) 
     });
 });
 
-export const getAllDeletedNotesController = asyncHandlerMiddleware(async (req, res) => {
+exports.getAllDeletedNotesController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
     validateId(userId);
     console.log(userId, "USER ID IN CONTROLLER");
@@ -231,7 +231,7 @@ export const getAllDeletedNotesController = asyncHandlerMiddleware(async (req, r
     });
 });
 
-export const getAllArchivedNotesController = asyncHandlerMiddleware(async (req, res) => {
+exports.getAllArchivedNotesController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
 validateId(userId);
     const allArchivedNotes = await getAllArchivedNotesService(userId)

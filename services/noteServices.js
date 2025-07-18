@@ -1,8 +1,8 @@
-import { Note } from "../models/index.js";
-import validateId from "../helpers/validateId.js";
-import { col, fn, Op, where } from "sequelize";
+const { Note } = require("../models/index.js");
+const validateId = require("../helpers/validateId.js");
+const { col, fn, Op, where } = require("sequelize");
 
-export const createNoteService = async (noteData, user_id) => {
+const createNoteService = async (noteData, user_id) => {
     const { title, content } = noteData;
 
     if (!title || typeof title !== "string") throw new Error("Invalid title");
@@ -12,7 +12,7 @@ export const createNoteService = async (noteData, user_id) => {
     return createdNote;
 };
 
-export const updateNoteService = async (id, user_id, updatedData) => {
+const updateNoteService = async (id, user_id, updatedData) => {
     validateId(id);
 
     const { title, content } = updatedData;
@@ -27,7 +27,7 @@ export const updateNoteService = async (id, user_id, updatedData) => {
     return note;
 };
 
-export const softDeleteNoteService = async (id, user_id) => {
+const softDeleteNoteService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({ where: { id, user_id, is_deleted: false } });
@@ -37,7 +37,7 @@ export const softDeleteNoteService = async (id, user_id) => {
     return note;
 };
 
-export const restoreNoteService = async (id, user_id) => {
+const restoreNoteService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({ where: { id, user_id, is_deleted: true } });
@@ -47,7 +47,7 @@ export const restoreNoteService = async (id, user_id) => {
     return note;
 };
 
-export const hardDeleteNoteService = async (id, user_id) => {
+const hardDeleteNoteService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({ where: { id, user_id, is_deleted: true } });
@@ -57,7 +57,7 @@ export const hardDeleteNoteService = async (id, user_id) => {
     return true;
 };
 
-export const archiveNoteService = async (id, user_id) => {
+const archiveNoteService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({ where: { id, user_id, is_archived: false, is_deleted: false } });
@@ -67,7 +67,7 @@ export const archiveNoteService = async (id, user_id) => {
     return note;
 };
 
-export const unArchiveNoteService = async (id, user_id) => {
+const unArchiveNoteService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({ where: { id, user_id, is_archived: true, is_deleted: false } });
@@ -77,7 +77,7 @@ export const unArchiveNoteService = async (id, user_id) => {
     return note;
 };
 
-export const getActiveNotesService = async (user_id) => {
+const getActiveNotesService = async (user_id) => {
     const notes = await Note.findAll({
         where: { user_id, is_deleted: false, is_archived: false },
         order: [["created_at", "DESC"]],
@@ -85,7 +85,7 @@ export const getActiveNotesService = async (user_id) => {
     return notes;
 };
 
-export const getNoteByIdService = async (id, user_id) => {
+const getNoteByIdService = async (id, user_id) => {
     validateId(id);
 
     const note = await Note.findOne({
@@ -95,7 +95,7 @@ export const getNoteByIdService = async (id, user_id) => {
     return note;
 };
 
-export const getNoteByTitleService = async (title, user_id) => {
+const getNoteByTitleService = async (title, user_id) => {
     if (!title || typeof title !== "string") throw new Error("Invalid title");
 
     const note = await Note.findOne({
@@ -110,7 +110,7 @@ export const getNoteByTitleService = async (title, user_id) => {
     return note;
 };
 
-export const getAllDeletedNotesService = async (user_id) => {
+const getAllDeletedNotesService = async (user_id) => {
     console.log(user_id, "USER ID IN SERVICE");
     const notes = await Note.findAll({
         where: { user_id, is_deleted: true },
@@ -120,7 +120,7 @@ export const getAllDeletedNotesService = async (user_id) => {
     return notes;
 };
 
-export const getAllArchivedNotesService = async (user_id) => {
+const getAllArchivedNotesService = async (user_id) => {
     const notes = await Note.findAll({
         where: { user_id, is_archived: true },
         order: [["created_at", "DESC"]],
@@ -129,7 +129,7 @@ export const getAllArchivedNotesService = async (user_id) => {
     return notes;
 };
 
-export const getFilteredSortedNotesService = async (
+const getFilteredSortedNotesService = async (
     user_id,
     { sortBy = "created_at", order = "DESC", category, is_pinned }
 ) => {
@@ -154,7 +154,7 @@ export const getFilteredSortedNotesService = async (
     return notes;
 };
 
-export const getNotesCountService = async (user_id) => {
+const getNotesCountService = async (user_id) => {
     validateId(user_id);
 
     const count = await Note.count({
@@ -162,4 +162,21 @@ export const getNotesCountService = async (user_id) => {
     });
 
     return count;
+};
+
+module.exports = {
+    createNoteService,
+    updateNoteService,
+    softDeleteNoteService,
+    restoreNoteService,
+    hardDeleteNoteService,
+    archiveNoteService,
+    unArchiveNoteService,
+    getActiveNotesService,
+    getNoteByIdService,
+    getNoteByTitleService,
+    getAllDeletedNotesService,
+    getAllArchivedNotesService,
+    getFilteredSortedNotesService,
+    getNotesCountService,
 };

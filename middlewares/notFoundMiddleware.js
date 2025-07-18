@@ -1,8 +1,8 @@
-const notFoundMiddleware = (err, req, res) => {
-    return res.status(404).json({
+const notFoundMiddleware = (req, res, next) => {
+    res.status(404).json({
         success: false,
-        message: `route ${req.originalUrl} not found`
+        message: "Route not found"
     });
 };
 
-export default notFoundMiddleware;
+module.exports = notFoundMiddleware;

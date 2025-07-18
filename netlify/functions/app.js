@@ -15,16 +15,14 @@ const otpRouter = require("../../routes/otpRoutes.js");
 const noteRouter = require("../../routes/noteRoutes.js");
 
 dotenv.config();
-
 const app = express();
 
 app.use(helmet());
 app.use(morgan("dev"));
-
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-// app.use(rateLimit); 
+// app.use(rateLimit);
 
 app.use("/auth", authRouter);
 app.use("/otp", otpRouter);

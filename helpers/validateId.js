@@ -4,4 +4,4 @@ const validateId = (id) => {
     }
 }
 
-export default validateId;
+module.exports = validateId;

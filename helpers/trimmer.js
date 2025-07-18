@@ -14,5 +14,5 @@ const trimmer = (payload) => {
     }
 }
 
-export default trimmer
+module.exports = trimmer;
 

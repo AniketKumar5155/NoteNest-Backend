@@ -18,4 +18,4 @@ const validateZod = (schema) => {
   };
 };
 
-export default validateZod;
+module.exports = validateZod;

@@ -10,4 +10,4 @@ const generateOtp = async (email) => {
     }
 };
 
-export default generateOtp;
+module.exports = generateOtp;

@@ -1,8 +1,8 @@
-import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
-import { storeOtpInDb, sendOtpToEmail, verifyOtp } from "../services/otpServices.js";
-import generateOtp from "../utils/generateOtp.js";
+const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
+const { storeOtpInDb, sendOtpToEmail, verifyOtp } = require("../services/otpServices.js");
+const generateOtp = require("../utils/generateOtp.js");
 
-export const getOtpController = asyncHandlerMiddleware(async (req, res) => {
+exports.getOtpController = asyncHandlerMiddleware(async (req, res) => {
   const { email, user_id } = req.body;
 
   if (!email && !user_id) {
@@ -23,7 +23,7 @@ export const getOtpController = asyncHandlerMiddleware(async (req, res) => {
   });
 });
 
-export const verifyOtpController = asyncHandlerMiddleware(async (req, res) => {
+exports.verifyOtpController = asyncHandlerMiddleware(async (req, res) => {
   const { otp, email, user_id } = req.body;
 
   if (!otp || (!email && !user_id)) {

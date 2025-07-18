@@ -1,6 +1,6 @@
-import { Model, DataTypes } from "sequelize";
+const { Model, DataTypes } = require("sequelize");
 
-export default (sequelize) => {
+module.exports = (sequelize) => {
   class Otp extends Model {
     static associate(models) {
       // If you want to define the relationship later

@@ -1,10 +1,10 @@
-import { User, Token } from "../models/index.js";
-import { Op } from "sequelize";
-import hashData from "../utils/hashData.js";
-import verifyData from "../utils/verifyData.js";
-import generateTokens from "../utils/generateToken.js";
+const { User, Token } = require("../models/index.js");
+const { Op } = require("sequelize");
+const hashData = require("../utils/hashData.js");
+const verifyData = require("../utils/verifyData.js");
+const generateTokens = require("../utils/generateToken.js");
 
-export const signupService = async ({ first_name, last_name, username, email, password }) => {
+const signupService = async ({ first_name, last_name, username, email, password }) => {
   try {
     const existingUser = await User.findOne({
       where: {
@@ -33,7 +33,7 @@ export const signupService = async ({ first_name, last_name, username, email, pa
   }
 };
 
-export const loginService = async ({ identifier, password }) => {
+const loginService = async ({ identifier, password }) => {
   try {
     const user = await User.findOne({
       where: {
@@ -76,9 +76,8 @@ export const loginService = async ({ identifier, password }) => {
   }
 };
 
-export const logoutService = async (userId) => {
+const logoutService = async (userId) => {
   try {
-    n
     const tokenEntry = await Token.findOne({
       where: {
         user_id: userId
@@ -99,4 +98,10 @@ export const logoutService = async (userId) => {
     console.error("LogoutService Error:", err.message);
     throw new Error(`Logout failed: ${err}`);
   }
+};
+
+module.exports = {
+  signupService,
+  loginService,
+  logoutService,
 };

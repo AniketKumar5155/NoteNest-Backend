@@ -1,6 +1,6 @@
-import { z } from "zod";
+const { z } = require("zod");
 
-export const createNoteSchema = z.object({
+const createNoteSchema = z.object({
   title: z
     .string({ required_error: "title is required" })
     .min(1, "title must be at least 1 character long"),
@@ -10,7 +10,7 @@ export const createNoteSchema = z.object({
     .optional(), 
 });
 
-export const updateNoteSchema = z.object({
+const updateNoteSchema = z.object({
   title: z
     .string()
     .min(1, "title must be at least 1 character long")
@@ -20,3 +20,10 @@ export const updateNoteSchema = z.object({
     .string()
     .optional(),
 });
+
+const noteValidators = {
+  createNoteSchema,
+  updateNoteSchema,
+};
+
+module.exports = noteValidators;

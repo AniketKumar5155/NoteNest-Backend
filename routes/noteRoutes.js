@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   archiveNoteController,
   createNoteController,
   getAllActiveNotesController,
@@ -11,31 +11,31 @@ import {
   unarchiveNoteController,
   updateNoteController,
   getAllDeletedNotesController,
-} from "../controllers/noteController.js";
-import validateZod from "../middlewares/validateZod.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
-import { createNoteSchema, updateNoteSchema } from "../validators/noteValidators.js";
+} = require("../controllers/noteController.js");
+const validateZod = require("../middlewares/validateZod.js");
+const authMiddleware = require("../middlewares/authMiddleware.js");
+const { createNoteSchema, updateNoteSchema } = require("../validators/noteValidators.js");
 
-const noteRouter = express.Router();
+const router = express.Router();
 
 // ✅ Specific routes first (important)
-noteRouter.get("/archive", authMiddleware, getAllArchivedNotesController);
-noteRouter.get("/bin", authMiddleware, getAllDeletedNotesController);
+router.get("/archive", authMiddleware, getAllArchivedNotesController);
+router.get("/bin", authMiddleware, getAllDeletedNotesController);
 
 // ✅ CRUD + note actions
-noteRouter.post("/", authMiddleware, validateZod(createNoteSchema), createNoteController);
-noteRouter.patch("/:id", authMiddleware, validateZod(updateNoteSchema), updateNoteController);
-noteRouter.patch("/:id/update", authMiddleware, updateNoteController); // optional, your design
-noteRouter.patch("/:id/soft-delete", authMiddleware, softDeleteNotesController);
-noteRouter.patch("/:id/restore", authMiddleware, restoreNotesController);
-noteRouter.delete("/:id/hard-delete", authMiddleware, hardDeleteNoteController);
-noteRouter.patch("/:id/archive", authMiddleware, archiveNoteController);
-noteRouter.patch("/:id/unarchive", authMiddleware, unarchiveNoteController);
+router.post("/", authMiddleware, validateZod(createNoteSchema), createNoteController);
+router.patch("/:id", authMiddleware, validateZod(updateNoteSchema), updateNoteController);
+router.patch("/:id/update", authMiddleware, updateNoteController); // optional, your design
+router.patch("/:id/soft-delete", authMiddleware, softDeleteNotesController);
+router.patch("/:id/restore", authMiddleware, restoreNotesController);
+router.delete("/:id/hard-delete", authMiddleware, hardDeleteNoteController);
+router.patch("/:id/archive", authMiddleware, archiveNoteController);
+router.patch("/:id/unarchive", authMiddleware, unarchiveNoteController);
 
 // ✅ All active notes
-noteRouter.get("/", authMiddleware, getAllActiveNotesController);
+router.get("/", authMiddleware, getAllActiveNotesController);
 
 // ✅ Dynamic route last to prevent overriding
-noteRouter.get("/:id", authMiddleware, getNoteByIdController);
+router.get("/:id", authMiddleware, getNoteByIdController);
 
-export default noteRouter;
+module.exports = router;

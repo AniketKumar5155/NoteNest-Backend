@@ -5,4 +5,4 @@ const verifyData = async (data, hashedData) => {
     return verifiedData;
 };
 
-export default verifyData;
+module.exports = verifyData;

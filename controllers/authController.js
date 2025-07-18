@@ -1,10 +1,10 @@
-import asyncHandlerMiddleware from "../middlewares/asyncHolderMiddleware.js";
-import * as authServices from "../services/authServices.js"
-import { signupSchema, loginSchema } from "../validators/authValidators.js";
-import generateTokens from "../utils/generateToken.js";
-import { Token } from "../models/index.js"
+const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
+const authServices = require("../services/authServices.js")
+const { signupSchema, loginSchema } = require("../validators/authValidators.js");
+const generateTokens = require("../utils/generateToken.js");
+const { Token } = require("../models/index.js")
 
-export const signupController = asyncHandlerMiddleware(async (req, res) => {
+exports.signupController = asyncHandlerMiddleware(async (req, res) => {
     const validatedSignupData = signupSchema.parse(req.body)
     const user = await authServices.signupService(validatedSignupData)
 
@@ -33,7 +33,7 @@ export const signupController = asyncHandlerMiddleware(async (req, res) => {
     })
 })
 
-export const loginController = asyncHandlerMiddleware(async (req, res) => {
+exports.loginController = asyncHandlerMiddleware(async (req, res) => {
     const validatedLoginData = loginSchema.parse(req.body)
 
     const { user, accessToken, refreshToken } = await authServices.loginService(validatedLoginData)
@@ -53,7 +53,7 @@ export const loginController = asyncHandlerMiddleware(async (req, res) => {
     });
 });
 
-export const logoutController = asyncHandlerMiddleware(async (req, res) => {
+exports.logoutController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user?.id;
     if (!userId) {
         res.status(401);

@@ -12,4 +12,4 @@ const hashData = async (data) => {
     }
 };
 
-export default hashData;
+module.exports = hashData;
