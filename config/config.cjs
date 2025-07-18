@@ -7,6 +7,12 @@ module.exports = {
     ? {
         use_env_variable: 'NETLIFY_DATABASE_URL',
         dialect: 'postgres',
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }
     : {
         username: process.env.DB_USER || "root",
