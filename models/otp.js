@@ -4,11 +4,6 @@ module.exports = (sequelize) => {
   class Otp extends Model {
     static associate(models) {
       // If you want to define the relationship later
-      Otp.belongsTo(models.User, {
-        foreignKey: "user_id",
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      });
     }
   }
 
@@ -18,10 +13,6 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-      },
-      user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true, // Keep this optional for email-based OTPs
       },
       email: {
         type: DataTypes.STRING(100),
