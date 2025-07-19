@@ -18,13 +18,6 @@ exports.storeOtpInDb = async (otp, email, expiresAt) => {
 
   await Otp.destroy({ where: { email } });
 
-  // console.log("🔍 OTP insert payload:", {
-  //   otp: hashedOtp,
-  //   email: finalEmail,
-  //   user_id: user_id || null,
-  //   expires_at: expiresAt,
-  // });
-
   await Otp.create({
     otp: hashedOtp,
     email: email,

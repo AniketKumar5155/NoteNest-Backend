@@ -8,11 +8,6 @@ module.exports = (sequelize) => {
         onDelete: "CASCADE"
       });
 
-      User.hasMany(models.Otp, {
-        foreignKey: "user_id",
-        onDelete: "CASCADE"
-      });
-
       User.hasMany(models.Note, {
         foreignKey: "user_id",
         onDelete: "CASCADE"
