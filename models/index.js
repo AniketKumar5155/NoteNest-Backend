@@ -1,6 +1,7 @@
 // models/index.js
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
+const config = require('../config/config.cjs');
 const UserModel = require('./user.js');
 const TokenModel = require('./token.js');
 const OtpModel = require('./otp.js');
@@ -8,17 +9,15 @@ const NoteModel = require('./note.js'); // if you have it
 
 dotenv.config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    dialectModule: require('mysql2'),
-    logging: false,
-  }
-);
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = config[env];
+
+let sequelize;
+if (dbConfig.use_env_variable) {
+  sequelize = new Sequelize(process.env[dbConfig.use_env_variable], dbConfig);
+} else {
+  sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
+}
 
 // Init all models
 const User = UserModel(sequelize);
