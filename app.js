@@ -37,6 +37,8 @@ app.use(express.json());
 app.use(cookieParser());
 // app.use(rateLimit);
 
+//Hello
+
 app.use("/auth", authRouter);
 app.use("/otp", otpRouter);
 app.use('/note', noteRouter);
