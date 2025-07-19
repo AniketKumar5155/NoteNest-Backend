@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const bodyparser = require("body-parser");
 const dotenv = require("dotenv");
 
 const notFoundMiddleware = require("../../middlewares/notFoundMiddleware.js");
@@ -19,17 +20,16 @@ const app = express();
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(cors());
-app.use(express.json()); // ✅ Must come first
+// app.use(express.json()); // ✅ Must come first
+app.use(bodyparser.json()); // Use body-parser to handle JSON bodies
 
 // ✅ Fix Netlify string body issue
 app.use((req, res, next) => {
-    console.log("Middleware to parse JSON body");
-    console.log(req.body);
-  if (req.body && typeof req.body === "string") {
+  if (Buffer.isBuffer(req.body)) {
     try {
-      req.body = JSON.parse(req.body);
+      req.body = JSON.parse(req.body.toString());
     } catch (err) {
-      console.error("JSON parsing failed:", err.message);
+      console.error("Failed to parse buffer body:", err.message);
     }
   }
   next();
