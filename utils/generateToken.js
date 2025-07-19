@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+const jwt = require('jsonwebtoken');
 
 const generateTokens = async ({userId, email, username}) => {
     try {

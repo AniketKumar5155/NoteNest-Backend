@@ -1,4 +1,4 @@
-import crypto from "crypto"
+const crypto = require('crypto');
 const generateOtp = async (email) => {
     try {
         const otp = crypto.randomInt(100000, 1000000).toString().padStart(6, '0');
