@@ -3,6 +3,7 @@ const { storeOtpInDb, sendOtpToEmail, verifyOtp } = require("../services/otpServ
 const generateOtp = require("../utils/generateOtp.js");
 
 exports.getOtpController = asyncHandlerMiddleware(async (req, res) => {
+  throw new Error(req.body);
   const { email } = req.body;
 
   if (!email) {
