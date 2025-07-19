@@ -61,7 +61,7 @@ exports.verifyOtp = async (otp, email) => {
     }
 
     if (Date.now() > new Date(otpEntry.expires_at).getTime()) {
-      await Otp.destroy({ where });
+      await Otp.destroy({ where : { email } });
       throw new Error("OTP has expired. Please request a new one.");
     }
 
@@ -70,7 +70,7 @@ exports.verifyOtp = async (otp, email) => {
       throw new Error("Invalid OTP. Please try again.");
     }
 
-    await Otp.destroy({ where });
+    await Otp.destroy({ where: { email } });
 
     return {
       success: true,
