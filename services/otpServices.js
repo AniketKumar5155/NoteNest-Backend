@@ -27,7 +27,7 @@ exports.storeOtpInDb = async (otp, email, expiresAt) => {
 
   await Otp.create({
     otp: hashedOtp,
-    email: finalEmail,
+    email: email,
     expires_at: expiresAt,
   });
 };

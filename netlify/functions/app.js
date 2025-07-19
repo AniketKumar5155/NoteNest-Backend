@@ -23,6 +23,8 @@ app.use(express.json()); // ✅ Must come first
 
 // ✅ Fix Netlify string body issue
 app.use((req, res, next) => {
+    console.log("Middleware to parse JSON body");
+    console.log(req.body);
   if (req.body && typeof req.body === "string") {
     try {
       req.body = JSON.parse(req.body);
