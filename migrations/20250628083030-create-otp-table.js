@@ -9,16 +9,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'users', // 👈 this should match your users table name
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
       email: {
         type: Sequelize.STRING(100),
         allowNull: false
