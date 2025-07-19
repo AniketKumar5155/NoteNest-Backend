@@ -17,6 +17,17 @@ const noteRouter = require("../../routes/noteRoutes.js");
 dotenv.config();
 const app = express();
 
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === "string") {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch (err) {
+      console.error("JSON parsing failed:", err.message);
+    }
+  }
+  next();
+});
+
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(cors());
