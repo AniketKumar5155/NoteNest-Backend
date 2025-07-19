@@ -12,24 +12,11 @@ exports.sendOtpToEmail = async (otp, email) => {
   });
 };
 
-exports.storeOtpInDb = async (otp, { email, user_id }, expiresAt) => {
-  let finalEmail = email;
-
-  // If user_id is provided but not email, fetch from user table
-  if (!finalEmail && user_id) {
-    const user = await User.findByPk(user_id);
-    if (!user) throw new Error("User not found.");
-    finalEmail = user.email;
-  }
-
-  if (!finalEmail) {
-    throw new Error("Email is required for OTP storage.");
-  }
+exports.storeOtpInDb = async (otp, email, expiresAt) => {
 
   const hashedOtp = await hashData(otp);
 
-  const cleanupWhere = user_id ? { user_id } : { email: finalEmail };
-  await Otp.destroy({ where: cleanupWhere });
+  await Otp.destroy({ where: { email } });
 
   // console.log("🔍 OTP insert payload:", {
   //   otp: hashedOtp,
@@ -41,7 +28,6 @@ exports.storeOtpInDb = async (otp, { email, user_id }, expiresAt) => {
   await Otp.create({
     otp: hashedOtp,
     email: finalEmail,
-    user_id: user_id || null,
     expires_at: expiresAt,
   });
 };
@@ -68,20 +54,14 @@ exports.getOtpForSignup = async (email) => {
   }
 };
 
-exports.verifyOtp = async (otp, { email, user_id }) => {
+exports.verifyOtp = async (otp, email) => {
   try {
     if (!otp || typeof otp !== "string") {
       throw new Error("A valid OTP is required.");
     }
-    // console.log("after validating otp");
-
-    const where = user_id ? { user_id } : email ? { email } : null;
-    if (!where) {
-      throw new Error("Either user_id or email is required.");
-    }
 
     // console.log("fetching OTP using:", where);
-    const otpEntry = await Otp.findOne({ where });
+    const otpEntry = await Otp.findOne({ where: { email } });
 
     if (!otpEntry) {
       throw new Error("No OTP found. Please request a new one.");

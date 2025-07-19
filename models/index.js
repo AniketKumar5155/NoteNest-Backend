@@ -14,8 +14,8 @@ const sequelize = new Sequelize(
   process.env.DB_PASS,
   {
     host: process.env.DB_HOST,
-    dialect: 'postgres',
-    dialectModule: require('pg'),
+    dialect: 'mysql',
+    dialectModule: require('mysql2'),
     logging: false,
   }
 );
