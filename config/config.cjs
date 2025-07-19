@@ -7,6 +7,7 @@ module.exports = {
     ? {
         use_env_variable: 'NETLIFY_DATABASE_URL',
         dialect: 'postgres',
+        dialectModule: require('pg'),
         dialectOptions: {
           ssl: {
             require: true,
@@ -20,5 +21,6 @@ module.exports = {
         database: process.env.DB_NAME || "your_db_name",
         host: process.env.DB_HOST || "127.0.0.1",
         dialect: "postgres",
+        dialectModule: require('pg'),
       },
 };
