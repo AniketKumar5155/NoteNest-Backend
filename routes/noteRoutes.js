@@ -11,6 +11,7 @@ const {
   unarchiveNoteController,
   updateNoteController,
   getAllDeletedNotesController,
+  getFilteredSortedNotesController,
 } = require("../controllers/noteController.js");
 const validateZod = require("../middlewares/validateZod.js");
 const authMiddleware = require("../middlewares/authMiddleware.js");
@@ -21,6 +22,7 @@ const router = express.Router();
 // ✅ Specific routes first (important)
 router.get("/archive", authMiddleware, getAllArchivedNotesController);
 router.get("/bin", authMiddleware, getAllDeletedNotesController);
+router.get("/filter", authMiddleware, getFilteredSortedNotesController);
 
 // ✅ CRUD + note actions
 router.post("/", authMiddleware, validateZod(createNoteSchema), createNoteController);

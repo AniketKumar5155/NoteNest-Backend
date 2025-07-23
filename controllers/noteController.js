@@ -11,6 +11,7 @@ const {
     softDeleteNoteService,
     unArchiveNoteService,
     updateNoteService,
+    getFilteredSortedNotesService
 } = require("../services/noteServices.js");
 
 const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
@@ -233,7 +234,7 @@ exports.getAllDeletedNotesController = asyncHandlerMiddleware(async (req, res) =
 
 exports.getAllArchivedNotesController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
-validateId(userId);
+    validateId(userId);
     const allArchivedNotes = await getAllArchivedNotesService(userId)
 
     return res.status(200).json({
@@ -243,3 +244,25 @@ validateId(userId);
 
     });
 });
+
+exports.getFilteredSortedNotesController = asyncHandlerMiddleware(async (req, res) => {
+    const userId = req.user.id;
+    validateId(userId);
+
+    const queries = {
+        category: req.query.category || null,
+        sortBy: req.query.sortBy || "created_at",
+        order: req.query.order || "DESC",
+        is_pinned: req.query.is_pinned === "true" ? true 
+                 : req.query.is_pinned === "false" ? false 
+                 : undefined, 
+    }
+
+    const filteredSortedNotes = await getFilteredSortedNotesService(userId, queries);
+
+    return res.status(200).json({
+        success: true,
+        message: "Fetched filtered and sorted notes successfully",
+        data: filteredSortedNotes,
+    });
+})

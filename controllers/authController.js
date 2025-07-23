@@ -30,6 +30,7 @@ exports.signupController = asyncHandlerMiddleware(async (req, res) => {
         success: true,
         message: "User created successfully",
         data: user,
+        token: accessToken
     })
 })
 
