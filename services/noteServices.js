@@ -129,30 +129,41 @@ const getAllArchivedNotesService = async (user_id) => {
     return notes;
 };
 
-const getFilteredSortedNotesService = async (
+const buildWhereClause = ({ user_id, category, is_pinned }) => {
+  const where = {
     user_id,
-    { sortBy = "created_at", order = "DESC", category, is_pinned }
-) => {
-    const whereClause = {
-        user_id,
-        is_deleted: false,
-    };
+    is_deleted: false,
+    is_archived: false, 
+  };
 
-    if (category) {
-        whereClause.category = category;
-    }
+  if (category) {
+    where.category = category;
+  }
 
-    if (typeof is_pinned === "boolean") {
-        whereClause.is_pinned = is_pinned;
-    }
+  if (typeof is_pinned === "boolean") {
+    where.is_pinned = is_pinned;
+  }
 
-    const notes = await Note.findAll({
-        where: whereClause,
-        order: [[sortBy, order]],
-    });
-
-    return notes;
+  return where;
 };
+
+
+const buildSortClause = ({ sortBy = "created_at", order = "DESC" }) => {
+  return [[sortBy, order]]
+};
+
+const getFilteredSortedNotesService = async (user_id, options = {}) => {
+  const whereClause = buildWhereClause({ user_id, ...options });
+  const sortClause = buildSortClause(options);
+
+  const notes = await Note.findAll({
+    where: whereClause,
+    order: sortClause,
+  });
+
+  return notes;
+};
+
 
 const getNotesCountService = async (user_id) => {
     validateId(user_id);
