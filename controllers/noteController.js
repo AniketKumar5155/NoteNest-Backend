@@ -246,23 +246,29 @@ exports.getAllArchivedNotesController = asyncHandlerMiddleware(async (req, res) 
 });
 
 exports.getFilteredSortedNotesController = asyncHandlerMiddleware(async (req, res) => {
-    const userId = req.user.id;
-    validateId(userId);
+  const userId = req.user.id;
+  validateId(userId);
 
-    const queries = {
-        category: req.query.category || null,
-        sortBy: req.query.sortBy || "created_at",
-        order: req.query.order || "DESC",
-        is_pinned: req.query.is_pinned === "true" ? true 
-                 : req.query.is_pinned === "false" ? false 
-                 : undefined, 
-    }
+  const {
+    sortBy = "created_at",
+    order = "DESC",
+    category,
+    is_pinned,
+  } = req.query;
 
-    const filteredSortedNotes = await getFilteredSortedNotesService(userId, queries);
+  const normalizedPinned =
+    is_pinned === "true" ? true :
+    is_pinned === "false" ? false :
+    undefined;
 
-    return res.status(200).json({
-        success: true,
-        message: "Fetched filtered and sorted notes successfully",
-        data: filteredSortedNotes,
-    });
-})
+  const notes = await getFilteredSortedNotesService(
+    userId,
+    { sortBy, order, category, is_pinned: normalizedPinned }
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: "Filtered and sorted notes fetched successfully",
+    data: notes,
+  });
+});
