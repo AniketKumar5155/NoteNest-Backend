@@ -297,7 +297,7 @@ exports.getAllActiveCategoriesController = asyncHandlerMiddleware(async (req, re
     validateId(userId);
 
     const categories = await getAllActiveCategoriesService(userId);
-    
+
     return res.status(200).json({
         success: true,
         message: "Fetched active categories successfully",
