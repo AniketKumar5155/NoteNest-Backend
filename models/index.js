@@ -1,11 +1,12 @@
-// models/index.js
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 const config = require('../config/config.cjs');
+
 const UserModel = require('./user.js');
 const TokenModel = require('./token.js');
 const OtpModel = require('./otp.js');
-const NoteModel = require('./note.js'); // if you have it
+const NoteModel = require('./note.js');
+const CategoryModel = require('./category.js');
 
 dotenv.config();
 
@@ -16,27 +17,32 @@ let sequelize;
 if (dbConfig.use_env_variable) {
   sequelize = new Sequelize(process.env[dbConfig.use_env_variable], dbConfig);
 } else {
-  sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
+  sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    dbConfig
+  );
 }
 
-// Init all models
-const User = UserModel(sequelize);
-const Token = TokenModel(sequelize);
-const Otp = OtpModel(sequelize);
-const Note = NoteModel(sequelize);
+const User = UserModel(sequelize, Sequelize.DataTypes);
+const Token = TokenModel(sequelize, Sequelize.DataTypes);
+const Otp = OtpModel(sequelize, Sequelize.DataTypes);
+const Note = NoteModel(sequelize, Sequelize.DataTypes);
+const Category = CategoryModel(sequelize, Sequelize.DataTypes); // ✅ fixed this line
 
-// Setup associations
-User.associate?.({ Token, Otp, Note }); 
+User.associate?.({ Token, Otp, Note, Category });
 Token.associate?.({ User });
 Otp.associate?.({ User });
-Note.associate?.({ User });
+Note.associate?.({ User, Category });
+Category.associate?.({ User, Note });
 
 module.exports = {
   sequelize,
-  Sequelize, 
+  Sequelize,
   User,
   Token,
   Otp,
   Note,
+  Category,
 };
-

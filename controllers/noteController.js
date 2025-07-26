@@ -11,11 +11,14 @@ const {
     softDeleteNoteService,
     unArchiveNoteService,
     updateNoteService,
-    getFilteredSortedNotesService
+    getFilteredSortedNotesService,
+    createCategoriesService,
+    getAllActiveCategoriesService,
+    updateCategoryService,
 } = require("../services/noteServices.js");
 
 const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
-const { createNoteSchema, updateNoteSchema } = require("../validators/noteValidators.js");
+const { createNoteSchema, updateNoteSchema, createCategorySchema } = require("../validators/noteValidators.js");
 const validateId = require("../helpers/validateId.js");
 
 exports.createNoteController = asyncHandlerMiddleware(async (req, res) => {
@@ -272,3 +275,57 @@ exports.getFilteredSortedNotesController = asyncHandlerMiddleware(async (req, re
     data: notes,
   });
 });
+
+exports.createCategoryController = asyncHandlerMiddleware(async (req, res) => {
+    const validatedData = createCategorySchema.parse(req.body);
+    const userId = req.user.id;
+    validateId(userId);
+
+    const { name } = validatedData;
+
+    const category = await createCategoriesService(userId, { name });
+
+    return res.status(201).json({
+        success: true,
+        message: "Category created successfully",
+        data: category,
+    });
+})
+
+exports.getAllActiveCategoriesController = asyncHandlerMiddleware(async (req, res) => {
+    const userId = req.user.id;
+    validateId(userId);
+
+    const categories = await getAllActiveCategoriesService(userId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Fetched active categories successfully",
+        data: categories,
+    });
+})  
+
+exports.updateCategoryController = asyncHandlerMiddleware(async (req, res) => {
+    const categoryId = req.params.id;
+    const userId = req.user.id;
+    validateId(userId);
+    validateId(categoryId);
+
+    const updatedData = req.body;
+
+    const updatedCategory = await updateCategoryService(categoryId, userId, updatedData);
+
+    if (!updatedCategory) {
+        return res.status(404).json({
+            success: false,
+            message: "Category not found or already deleted",
+            data: null,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Category updated successfully",
+        data: updatedCategory,
+    });
+})

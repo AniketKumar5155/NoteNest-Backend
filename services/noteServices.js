@@ -1,9 +1,9 @@
-const { Note } = require("../models/index.js");
+const { Note, Category } = require("../models/index.js");
 const validateId = require("../helpers/validateId.js");
 const { col, fn, Op, where } = require("sequelize");
 
 const createNoteService = async (noteData, user_id) => {
-    const { title, content } = noteData;
+    const { title, content, } = noteData;
 
     if (!title || typeof title !== "string") throw new Error("Invalid title");
     if (typeof content !== "string") throw new Error("Invalid content");
@@ -169,6 +169,45 @@ const getFilteredSortedNotesService = async (user_id, options = {}) => {
     return notes;
 };
 
+const createCategoriesService = async (user_id, categoryData) => {
+    const { name } = categoryData;
+
+    if (!name || typeof name !== "string") {
+        throw new Error("Invalid category name");
+    }
+    const category = await Category.create({ name, user_id });
+    return category;
+}
+
+const getAllActiveCategoriesService = async (user_id) => {
+    validateId(user_id);
+
+    const categories = await Category.findAll({
+        where: { user_id },
+        order: [["created_at", "DESC"]],
+    });
+
+    return categories;
+};
+
+const updateCategoryService = async (id, user_id, updatedData) => {
+    validateId(id);
+
+    const { name } = updatedData;
+
+    if (!name || typeof name !== "string") {
+        throw new Error("Invalid category name");
+    }
+
+    const category = await Category.findOne({ 
+        where: { id, user_id }
+    });
+    if (!category) return null;
+
+    await category.update(updatedData);
+    return category;
+};
+
 const getNotesCountService = async (user_id) => {
     validateId(user_id);
 
@@ -194,4 +233,7 @@ module.exports = {
     getAllArchivedNotesService,
     getFilteredSortedNotesService,
     getNotesCountService,
+    createCategoriesService,
+    getAllActiveCategoriesService,
+    updateCategoryService,
 };

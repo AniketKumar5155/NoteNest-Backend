@@ -7,7 +7,7 @@ const createNoteSchema = z.object({
 
   content: z
     .string()
-    .optional(), 
+    .optional(),
 });
 
 const updateNoteSchema = z.object({
@@ -21,9 +21,31 @@ const updateNoteSchema = z.object({
     .optional(),
 });
 
+const createCategorySchema = z.object({
+  name: z
+    .string({
+      required_error: "name is required",
+      invalid_type_error: "name must be a string"
+    })
+    .min(1, "name must be at least 1 character long")
+    .trim(),
+});
+
+const updateCategorySchema = z.object({
+  name: z
+    .string({
+      required_error: "name is required",
+      invalid_type_error: "name must be a string"
+    })
+    .min(1, "name must be at least 1 character long")
+    .trim(),
+});
+
 const noteValidators = {
   createNoteSchema,
   updateNoteSchema,
+  createCategorySchema,
+  updateCategorySchema,
 };
 
 module.exports = noteValidators;
