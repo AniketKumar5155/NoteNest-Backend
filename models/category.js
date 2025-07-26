@@ -4,7 +4,6 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     static associate(models) {
-      // Category belongs to User
       Category.belongsTo(models.User, {
         foreignKey: "user_id",
         onDelete: "CASCADE",
@@ -48,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Category",
       tableName: "categories",
       underscored: true,
-      timestamps: false, // since you’re explicitly setting created_at and updated_at
+      timestamps: false, 
     }
   );
 
