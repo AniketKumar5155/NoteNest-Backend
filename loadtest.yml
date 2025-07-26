@@ -1,0 +1,12 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 33
+  headers:
+    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzLCJlbWFpbCI6ImFuaWtldGtyNTE1NUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6IlRlc3QxIiwiaWF0IjoxNzUzNTEzNDExLCJleHAiOjE3NTQzNzc0MTF9.34p2AGKFhIVqRXF8WtGM0a0t-nncaH6oDRKHUMdvN2o"
+
+scenarios:
+  - flow:
+      - get:
+          url: "/note/active-categories"

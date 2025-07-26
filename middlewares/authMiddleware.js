@@ -18,6 +18,8 @@ const authMiddleware = async (req, res, next) => {
     if (!user || user.is_deleted || user.is_banned) {
       return res.status(403).json({ message: "Access denied. Invalid user." });
     }
+    console.log("TOKEN RECEIVED:", req.headers.authorization);
+
 
     req.user = {
       id: user.id,

@@ -293,17 +293,20 @@ exports.createCategoryController = asyncHandlerMiddleware(async (req, res) => {
 })
 
 exports.getAllActiveCategoriesController = asyncHandlerMiddleware(async (req, res) => {
+    console.log("before accessing req.user.id:", req.user); // ✅ check if req.user exists
+
     const userId = req.user.id;
     validateId(userId);
 
     const categories = await getAllActiveCategoriesService(userId);
+    console.log("after fetching categories:", req.user);  // optional
 
     return res.status(200).json({
         success: true,
         message: "Fetched active categories successfully",
         data: categories,
     });
-})  
+});
 
 exports.updateCategoryController = asyncHandlerMiddleware(async (req, res) => {
     const categoryId = req.params.id;

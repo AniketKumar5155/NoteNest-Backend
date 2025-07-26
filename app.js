@@ -21,6 +21,7 @@ const allowedOrigins = [
   "http://192.168.29.114:5173",
   "http://localhost:5174",
   "http://192.168.29.114:5174",
+  
 ];
 
 app.use(cors({
@@ -43,15 +44,18 @@ app.use("/auth", authRouter);
 app.use("/otp", otpRouter);
 app.use('/note', noteRouter);
 
+
+
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const PORT = process.env.PORT || 3000;
 // app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+  //   console.log(`Server is running on http://localhost:${PORT}`);
+  // });
+  
+  app.listen(3000, '0.0.0.0', () => {
+    console.log("Server running on http://<your-local-ip>:3000");
+  });
 
-app.listen(3000, '0.0.0.0', () => {
-  console.log("Server running on http://<your-local-ip>:3000");
-});
 
