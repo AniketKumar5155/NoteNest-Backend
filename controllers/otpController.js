@@ -4,19 +4,15 @@ const generateOtp = require("../utils/generateOtp.js");
 
 exports.getOtpController = asyncHandlerMiddleware(async (req, res) => {
   const { email } = req.body;
-  console.log(req.body);
-  console.log(email)
   if (!email) {
     throw new Error("Email is required to send OTP");
   }
 
   const { otp, expiresAt } = await generateOtp();
 
-  // Pass both email/user_id to the store function as an object
   await storeOtpInDb(otp, email, expiresAt);
 
-  // Use email if available, otherwise fetch user email before calling this
-  await sendOtpToEmail(otp, email); // ⚠️ if email is undefined, this will break
+  await sendOtpToEmail(otp, email);
 
   res.status(200).json({
     success: true,

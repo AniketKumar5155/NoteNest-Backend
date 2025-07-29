@@ -8,6 +8,7 @@ const createNoteSchema = z.object({
   content: z
     .string()
     .optional(),
+
 });
 
 const updateNoteSchema = z.object({
@@ -19,6 +20,9 @@ const updateNoteSchema = z.object({
   content: z
     .string()
     .optional(),
+
+  category: z.string().nullable().optional(),
+
 });
 
 const createCategorySchema = z.object({
@@ -29,6 +33,7 @@ const createCategorySchema = z.object({
     })
     .min(1, "name must be at least 1 character long")
     .trim(),
+
 });
 
 const updateCategorySchema = z.object({
