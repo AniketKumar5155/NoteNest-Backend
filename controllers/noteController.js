@@ -1,9 +1,6 @@
 const {
     archiveNoteService,
     createNoteService,
-    getActiveNotesService,
-    getAllArchivedNotesService,
-    getAllDeletedNotesService,
     getNoteByIdService,
     getNoteByTitleService,
     hardDeleteNoteService,
@@ -15,10 +12,12 @@ const {
     createCategoriesService,
     getAllActiveCategoriesService,
     updateCategoryService,
+    getAllDeletedFilteredSortedNotesService,
+    getAllArchivedFilteredSortedNotesService,
 } = require("../services/noteServices.js");
 
 const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
-const { createNoteSchema, updateNoteSchema, createCategorySchema } = require("../validators/noteValidators.js");
+const { createNoteSchema, updateNoteSchema, createCategorySchema, updateCategorySchema } = require("../validators/noteValidators.js");
 const validateId = require("../helpers/validateId.js");
 
 exports.createNoteController = asyncHandlerMiddleware(async (req, res) => {
@@ -44,7 +43,7 @@ exports.updateNoteController = asyncHandlerMiddleware(async (req, res) => {
     if (!updatedNote) {
         return res.status(404).json({
             success: false,
-            message: "Note not found or already deleted",
+            message: "Note not found, may be deleted or you do not have access",
             data: null,
         });
     }
@@ -159,18 +158,6 @@ exports.unarchiveNoteController = asyncHandlerMiddleware(async (req, res) => {
     });
 });
 
-exports.getAllActiveNotesController = asyncHandlerMiddleware(async (req, res) => {
-    const userId = req.user.id;
-
-    const notes = await getActiveNotesService(userId);
-
-    return res.status(200).json({
-        success: true,
-        message: "Fetched active notes successfully",
-        data: notes,
-
-    });
-});
 
 exports.getNoteByIdController = asyncHandlerMiddleware(async (req, res) => {
     const userId = req.user.id;
@@ -221,60 +208,103 @@ exports.getNoteBytitleController = asyncHandlerMiddleware(async (req, res) => {
     });
 });
 
-exports.getAllDeletedNotesController = asyncHandlerMiddleware(async (req, res) => {
-    const userId = req.user.id;
-    validateId(userId);
-    console.log(userId, "USER ID IN CONTROLLER");
-    const allDeletedNotes = await getAllDeletedNotesService(userId)
 
-    return res.status(200).json({
-        success: true,
-        message: "Fetched deleted notes successfully",
-        data: allDeletedNotes,
-
-    });
-});
-
-exports.getAllArchivedNotesController = asyncHandlerMiddleware(async (req, res) => {
-    const userId = req.user.id;
-    validateId(userId);
-    const allArchivedNotes = await getAllArchivedNotesService(userId)
-
-    return res.status(200).json({
-        success: true,
-        message: "Fetched archived notes successfully",
-        data: allArchivedNotes,
-
-    });
-});
 
 exports.getFilteredSortedNotesController = asyncHandlerMiddleware(async (req, res) => {
-  const userId = req.user.id;
-  validateId(userId);
+    const userId = req.user.id;
+    validateId(userId);
 
-  const {
-    sortBy = "created_at",
-    order = "DESC",
-    category,
-    is_pinned,
-  } = req.query;
+    const {
+        sortBy = "created_at",
+        order = "DESC",
+        category,
+        is_pinned,
+    } = req.query;
 
-  const normalizedPinned =
-    is_pinned === "true" ? true :
-    is_pinned === "false" ? false :
-    undefined;
+    const normalizedPinned =
+        is_pinned === "true" ? true :
+            is_pinned === "false" ? false :
+                undefined;
 
-  const notes = await getFilteredSortedNotesService(
-    userId,
-    { sortBy, order, category, is_pinned: normalizedPinned }
-  );
+    const notes = await getFilteredSortedNotesService(
+        userId,
+        { sortBy, order, category, is_pinned: normalizedPinned }
+    );
 
-  return res.status(200).json({
-    success: true,
-    message: "Filtered and sorted notes fetched successfully",
-    data: notes,
-  });
+    return res.status(200).json({
+        success: true,
+        message: "Filtered and sorted notes fetched successfully",
+        data: notes,
+    });
 });
+
+exports.getAllDeletedFilteredSortedNotesController = asyncHandlerMiddleware(async (req, res) => {
+    const userId = req.user.id;
+    validateId(userId)
+    const {
+        sortBy = "deleted_at",
+        order = "DESC",
+        category,
+        is_pinned,
+    } = req.query;
+
+    const normalizedPinned =
+        is_pinned === "true" ? true :
+            is_pinned === "false" ? false :
+                undefined;
+
+    const notes = await getAllDeletedFilteredSortedNotesService(
+        userId,
+        {
+            sortBy,
+            order,
+            category,
+            is_pinned: normalizedPinned,
+        });
+
+    res.status(200).json({
+        success: true,
+        total: notes.length,
+        message: "All deleted filtered and sorted notes",
+        data: notes,
+    });
+});
+
+exports.getAllArchivedFilteredSortedNotesController = asyncHandlerMiddleware(async (req, res) => {
+    const userId = req.user.id
+    validateId(userId)
+    const {
+        sortBy = "updated_at",
+        order = "DESC",
+        category,
+        is_pinned,
+        is_deleted = false,
+        is_archived = true,
+    } = req.query
+
+    const normalizedPinned =
+        is_pinned === "true" ? true :
+            is_pinned === "false" ? false :
+                undefined;
+
+    const notes = await getAllArchivedFilteredSortedNotesService(
+        userId,
+        {
+            sortBy,
+            order,
+            category,
+            is_pinned: normalizedPinned,
+            is_deleted,
+            is_archived,
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "All Archived filtered and sorted notes",
+            data: notes,
+        })
+})
+
 
 exports.createCategoryController = asyncHandlerMiddleware(async (req, res) => {
     const validatedData = createCategorySchema.parse(req.body);
@@ -297,7 +327,7 @@ exports.getAllActiveCategoriesController = asyncHandlerMiddleware(async (req, re
     validateId(userId);
 
     const categories = await getAllActiveCategoriesService(userId);
-    
+
     return res.status(200).json({
         success: true,
         message: "Fetched active categories successfully",
@@ -311,7 +341,7 @@ exports.updateCategoryController = asyncHandlerMiddleware(async (req, res) => {
     validateId(userId);
     validateId(categoryId);
 
-    const updatedData = req.body;
+    const updatedData = updateCategorySchema.parse(req.body);
 
     const updatedCategory = await updateCategoryService(categoryId, userId, updatedData);
 
