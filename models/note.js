@@ -35,11 +35,15 @@ module.exports = (sequelize) => {
             allowNull: true,
         },
         color: {
-            type: DataTypes.STRING(20),  //optional
-            defaultValue: '#d3d3d3',
+            type: DataTypes.STRING(20),
+            defaultValue: 'amber',
+        },
+        shade: {
+            type: DataTypes.STRING(20),
+            defaultValue: 300,
         },
         category: {
-            type: DataTypes.STRING(100), // optional
+            type: DataTypes.STRING(100),
             allowNull: true,
         },
         is_pinned: {
