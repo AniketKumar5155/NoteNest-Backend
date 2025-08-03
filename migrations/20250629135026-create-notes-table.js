@@ -23,11 +23,15 @@ module.exports = {
         allowNull: true,
       },
       color: {
-        type: Sequelize.STRING(20),  //optional
-        defaultValue: '#d3d3d3',
+        type: Sequelize.STRING(20),
+        defaultValue: 'amber',
+      },
+      shade: {
+        type: Sequelize.STRING(20),
+        defaultValue: 200,
       },
       category: {
-        type: Sequelize.STRING(100), // optional
+        type: Sequelize.STRING(100),
         allowNull: true,
       },
       is_pinned: {
