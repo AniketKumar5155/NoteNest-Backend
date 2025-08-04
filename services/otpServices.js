@@ -42,7 +42,7 @@ exports.getOtpForSignup = async (email) => {
       // otp,
     };
   } catch (err) {
-    console.error("Error in getOtpForSignup:", err.message);
+    // console.error("Error in getOtpForSignup:", err.message);
     throw new Error("Failed to send OTP. Try again later.");
   }
 };

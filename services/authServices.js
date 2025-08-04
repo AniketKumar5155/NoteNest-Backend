@@ -28,7 +28,7 @@ const signupService = async ({ first_name, last_name, username, email, password 
 
     return newUser;
   } catch (err) {
-    console.error("SignupService Error:", err.message);
+    // console.error("SignupService Error:", err.message);
     throw new Error("Signup failed. Please try again." + err);
   }
 };
@@ -71,7 +71,7 @@ const loginService = async ({ identifier, password }) => {
       },
     };
   } catch (err) {
-    console.error("LoginService Error:", err.message);
+    // console.error("LoginService Error:", err.message);
     throw new Error(`Login failed: ${err}`);
   }
 };
@@ -95,7 +95,7 @@ const logoutService = async (userId) => {
       message: "Logout successful.",
     };
   } catch (err) {
-    console.error("LogoutService Error:", err.message);
+    // console.error("LogoutService Error:", err.message);
     throw new Error(`Logout failed: ${err}`);
   }
 };

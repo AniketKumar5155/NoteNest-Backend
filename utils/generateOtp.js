@@ -5,7 +5,7 @@ const generateOtp = async (email) => {
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
         return { otp, expiresAt };
     } catch (error) {
-        console.error(`Error generating OTP: ${error}`);
+        // console.error(`Error generating OTP: ${error}`);
         throw new Error('Failed to generate OTP');
     }
 };

@@ -10,7 +10,6 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    // console.log("Access Token:", token);
 
     const decoded = jwt.verify(token, process.env.SECRET_ACCESS_TOKEN);
     const user = await User.findByPk(decoded.userId);
@@ -18,8 +17,6 @@ const authMiddleware = async (req, res, next) => {
     if (!user || user.is_deleted || user.is_banned) {
       return res.status(403).json({ message: "Access denied. Invalid user." });
     }
-    console.log("TOKEN RECEIVED:", req.headers.authorization);
-
 
     req.user = {
       id: user.id,
@@ -29,7 +26,6 @@ const authMiddleware = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Token validation error:", error);
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

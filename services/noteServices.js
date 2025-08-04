@@ -56,7 +56,7 @@ const updateNoteColorAndShadeService = async (id, user_id, validatedData) => {
 
     if(!note) return null;
 
-    console.log(validatedData)
+    // console.log(validatedData)
 
     await note.update(validatedData)
     return note
