@@ -9,6 +9,20 @@ const ALLOWED_SHADES = [
   "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"
 ];
 
+// ✅ Reusable validators
+const colorSchema = z
+  .string()
+  .refine(val => ALLOWED_COLORS.includes(val), {
+    message: "Invalid color",
+  });
+
+const shadeSchema = z
+  .string()
+  .refine(val => ALLOWED_SHADES.includes(val), {
+    message: "Invalid shade",
+  });
+
+// ✅ Create Note
 const createNoteSchema = z.object({
   title: z
     .string({ required_error: "title is required" })
@@ -18,38 +32,27 @@ const createNoteSchema = z.object({
 
   category: z.string().nullable().optional(),
 
-  color: z.enum(ALLOWED_COLORS).optional().default("gray"),
+  color: colorSchema.default("amber"),
 
-  shade: z
-    .string()
-    .refine(val => ALLOWED_SHADES.includes(val), {
-      message: "Invalid shade",
-    })
-    .optional()
-    .default("100"),
+  shade: shadeSchema.default("300"),
 });
 
+// ✅ Update Note
 const updateNoteSchema = z.object({
-  title: z
-    .string()
-    .min(1, "title must be at least 1 character long")
-    .optional(),
-
+  title: z.string().min(1, "title must be at least 1 character long").optional(),
   content: z.string().optional(),
-
   category: z.string().nullable().optional(),
-
-  color: z.enum(ALLOWED_COLORS).optional(),
-
-  shade: z
-    .string()
-    .refine(val => ALLOWED_SHADES.includes(val), {
-      message: "Invalid shade",
-    })
-    .optional()
-    .default("100"),
+  color: colorSchema.optional(),
+  shade: shadeSchema.optional(),
 });
 
+// ✅ Only update color and shade + id
+const updateNoteColorSchema = z.object({
+  color: colorSchema,
+  shade: shadeSchema,
+});
+
+// ✅ Create Category
 const createCategorySchema = z.object({
   name: z
     .string({
@@ -60,6 +63,7 @@ const createCategorySchema = z.object({
     .trim(),
 });
 
+// ✅ Update Category
 const updateCategorySchema = z.object({
   name: z
     .string({
@@ -70,9 +74,11 @@ const updateCategorySchema = z.object({
     .trim(),
 });
 
+// ✅ Export all
 const noteValidators = {
   createNoteSchema,
   updateNoteSchema,
+  updateNoteColorSchema,
   createCategorySchema,
   updateCategorySchema,
 };

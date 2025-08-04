@@ -14,10 +14,11 @@ const {
     updateCategoryService,
     getAllDeletedFilteredSortedNotesService,
     getAllArchivedFilteredSortedNotesService,
+    updateNoteColorAndShadeService,
 } = require("../services/noteServices.js");
 
 const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
-const { createNoteSchema, updateNoteSchema, createCategorySchema, updateCategorySchema } = require("../validators/noteValidators.js");
+const { createNoteSchema, updateNoteSchema, createCategorySchema, updateCategorySchema, updateNoteColorSchema } = require("../validators/noteValidators.js");
 const validateId = require("../helpers/validateId.js");
 
 exports.createNoteController = asyncHandlerMiddleware(async (req, res) => {
@@ -54,6 +55,29 @@ exports.updateNoteController = asyncHandlerMiddleware(async (req, res) => {
         data: updatedNote,
     });
 });
+
+exports.updateNoteColorAndShadeController = asyncHandlerMiddleware(async (req, res) => {
+    const validatedData = updateNoteColorSchema.parse(req.body)
+    const noteId = req.params.id;
+    const userId = req.user.id
+
+    const updatedNoteColorAndShade = await updateNoteColorAndShadeService(noteId, userId, validatedData)
+
+       if (!updatedNoteColorAndShade) {
+        return res.status(404).json({
+            success: false,
+            message: "Note not found",
+            data: null,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Note color and shade updated successfully",
+        data: updatedNoteColorAndShade,
+    })
+
+})
 
 exports.softDeleteNotesController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
@@ -164,6 +188,14 @@ exports.getNoteByIdController = asyncHandlerMiddleware(async (req, res) => {
     const noteId = req.params.id;
     const noteById = await getNoteByIdService(noteId, userId);
 
+    let status = "active"
+    if (noteById.is_deleted){
+        status = "deleted"
+    }
+    else if (noteById.is_archived){
+        status = "archived"
+    }
+
     if (!noteById) {
         return res.status(404).json({
             success: false,
@@ -175,7 +207,10 @@ exports.getNoteByIdController = asyncHandlerMiddleware(async (req, res) => {
     return res.status(200).json({
         success: true,
         message: "Fetched note by ID successfully",
-        data: noteById,
+        data: {
+            ...noteById.toJSON(),
+            status,
+        },
     });
 });
 

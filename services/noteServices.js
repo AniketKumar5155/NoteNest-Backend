@@ -19,7 +19,7 @@ const createNoteService = async (noteData, user_id) => {
   });
 
   return newNote;
-};
+}; 
 
 
 const updateNoteService = async (id, user_id, updatedData) => {
@@ -34,12 +34,6 @@ const updateNoteService = async (id, user_id, updatedData) => {
   if ("category" in updatedData && typeof updatedData.category !== "string")
     throw new Error("Invalid category");
 
-  if ("color" in updatedData && typeof updatedData.color !== "string")
-    throw new Error("Invalid color")
-
-  if("shade" in updatedData && typeof updatedData.shade !== "string")
-    throw new Error("Invalid shade")
-
   const note = await Note.findOne({
     where: { id, user_id, is_deleted: false },
   });
@@ -49,6 +43,24 @@ const updateNoteService = async (id, user_id, updatedData) => {
   await note.update(updatedData);
   return note;
 };
+
+const updateNoteColorAndShadeService = async (id, user_id, validatedData) => {
+    validateId(id)
+    validateId(user_id)
+
+    const note = await Note.findOne({
+        where : {
+            id, user_id,
+        }
+    });
+
+    if(!note) return null;
+
+    console.log(validatedData)
+
+    await note.update(validatedData)
+    return note
+}
 
 const softDeleteNoteService = async (id, user_id) => {
     validateId(id);
@@ -288,4 +300,6 @@ module.exports = {
     updateCategoryService,
     getAllDeletedFilteredSortedNotesService,
     getAllArchivedFilteredSortedNotesService,
+    updateNoteColorAndShadeService,
+    
 };
