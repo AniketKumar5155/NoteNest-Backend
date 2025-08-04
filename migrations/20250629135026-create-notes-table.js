@@ -28,7 +28,7 @@ module.exports = {
       },
       shade: {
         type: Sequelize.STRING(20),
-        defaultValue: 200,
+        defaultValue: 300,
       },
       category: {
         type: Sequelize.STRING(100),
