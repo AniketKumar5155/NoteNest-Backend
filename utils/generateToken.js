@@ -12,7 +12,7 @@ const generateTokens = async ({userId, email, username}) => {
 
         return { accessToken, refreshToken }
     } catch (error) {
-        console.error(`Error generating access and refresh token: ${error}`);
+        // console.error(`Error generating access and refresh token: ${error}`);
         throw new Error("Failed to generate access and refresh token");
     };
 };
