@@ -3,45 +3,45 @@ const validateId = require("../helpers/validateId.js");
 const { col, fn, Op, where } = require("sequelize");
 
 const createNoteService = async (noteData, user_id) => {
-  const { title, content, category } = noteData;
+    const { title, content, category } = noteData;
 
-  if (!title || typeof title !== "string") throw new Error("Invalid title");
-  if (typeof content !== "string") throw new Error("Invalid content");
+    if (!title || typeof title !== "string") throw new Error("Invalid title");
+    if (typeof content !== "string") throw new Error("Invalid content");
 
-  if (category && typeof category !== "string") {
-    throw new Error("Invalid category");
-  }
+    if (category && typeof category !== "string") {
+        throw new Error("Invalid category");
+    }
 
-  const newNote = await Note.create({
-    user_id,
-    title,
-    content,
-  });
+    const newNote = await Note.create({
+        user_id,
+        title,
+        content,
+    });
 
-  return newNote;
-}; 
+    return newNote;
+};
 
 
 const updateNoteService = async (id, user_id, updatedData) => {
-  validateId(id);
+    validateId(id);
 
-  if ("title" in updatedData && typeof updatedData.title !== "string")
-    throw new Error("Invalid title");
+    if ("title" in updatedData && typeof updatedData.title !== "string")
+        throw new Error("Invalid title");
 
-  if ("content" in updatedData && typeof updatedData.content !== "string")
-    throw new Error("Invalid content");
+    if ("content" in updatedData && typeof updatedData.content !== "string")
+        throw new Error("Invalid content");
 
-  if ("category" in updatedData && typeof updatedData.category !== "string")
-    throw new Error("Invalid category");
+    if ("category" in updatedData && typeof updatedData.category !== "string")
+        throw new Error("Invalid category");
 
-  const note = await Note.findOne({
-    where: { id, user_id, is_deleted: false },
-  });
+    const note = await Note.findOne({
+        where: { id, user_id, is_deleted: false },
+    });
 
-  if (!note) return null;
+    if (!note) return null;
 
-  await note.update(updatedData);
-  return note;
+    await note.update(updatedData);
+    return note;
 };
 
 const updateNoteColorAndShadeService = async (id, user_id, validatedData) => {
@@ -49,12 +49,12 @@ const updateNoteColorAndShadeService = async (id, user_id, validatedData) => {
     validateId(user_id)
 
     const note = await Note.findOne({
-        where : {
+        where: {
             id, user_id,
         }
     });
 
-    if(!note) return null;
+    if (!note) return null;
 
     // console.log(validatedData)
 
@@ -184,30 +184,30 @@ const buildSortClause = ({ sortBy = "created_at", order = "DESC" }) => {
 };
 
 const getFilteredSortedNotesService = async (userId, options) => {
-  const { category, is_pinned } = options;
+    const { category, is_pinned } = options;
 
-  const whereClause = {
-    user_id: userId,
-    is_deleted: false,
-    is_archived: false,
-  };
+    const whereClause = {
+        user_id: userId,
+        is_deleted: false,
+        is_archived: false,
+    };
 
-  if (typeof is_pinned === "boolean") {
-    whereClause.is_pinned = is_pinned;
-  }
+    if (typeof is_pinned === "boolean") {
+        whereClause.is_pinned = is_pinned;
+    }
 
-  if (category !== undefined && category !== null && category !== "") {
-    whereClause.category = category;
-  }
+    if (category !== undefined && category !== null && category !== "") {
+        whereClause.category = category;
+    }
 
-  const sortClause = buildSortClause(options);
+    const sortClause = buildSortClause(options);
 
-  const notes = await Note.findAll({
-    where: whereClause,
-    order: sortClause,
-  });
+    const notes = await Note.findAll({
+        where: whereClause,
+        order: sortClause,
+    });
 
-  return notes;
+    return notes;
 };
 
 const getAllDeletedFilteredSortedNotesService = async (user_id, options) => {
@@ -273,6 +273,35 @@ const updateCategoryService = async (id, user_id, updatedData) => {
     return category;
 };
 
+const deleteCategoryService = async (id, user_id) => {
+    validateId(id);
+    validateId(user_id);
+
+    const category = await Category.findOne({
+        where: { id, user_id },
+    });
+
+    if (!category) return null;
+
+    const categoryName = category.name;
+
+    const notesWithCategory = await Note.findAll({
+        where: {
+            user_id,
+            category: categoryName,
+        },
+    });
+
+    for (const note of notesWithCategory) {
+        await note.update({ category: null });
+    }
+
+    await category.destroy();
+
+    return true;
+};
+
+
 const getNotesCountService = async (user_id) => {
     validateId(user_id);
 
@@ -301,5 +330,6 @@ module.exports = {
     getAllDeletedFilteredSortedNotesService,
     getAllArchivedFilteredSortedNotesService,
     updateNoteColorAndShadeService,
-    
+    deleteCategoryService,
+
 };

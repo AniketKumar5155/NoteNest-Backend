@@ -14,7 +14,8 @@ const {
   getFilteredSortedNotesController,
   getAllDeletedFilteredSortedNotesController,
   getAllArchivedFilteredSortedNotesController,
-  updateNoteColorAndShadeController
+  updateNoteColorAndShadeController,
+  deleteCategoryController
 } = require("../controllers/noteController.js");
 const validateZod = require("../middlewares/validateZod.js");
 const authMiddleware = require("../middlewares/authMiddleware.js");
@@ -34,11 +35,12 @@ router.patch("/:id/category", authMiddleware, validateZod(updateCategorySchema),
 router.patch("/:id/soft-delete", authMiddleware, softDeleteNotesController);
 router.patch("/:id/restore", authMiddleware, restoreNotesController);
 router.delete("/:id/hard-delete", authMiddleware, hardDeleteNoteController);
+router.delete("/:id/category/delete", authMiddleware, deleteCategoryController)
 router.patch("/:id/archive", authMiddleware, archiveNoteController);
 router.patch("/:id/unarchive", authMiddleware, unarchiveNoteController);
 router.patch("/:id/update-color-shade", authMiddleware, updateNoteColorAndShadeController)
 
 router.get("/:id", authMiddleware, getNoteByIdController);
 
-module.exports = router;
+module.exports = router;  
  
