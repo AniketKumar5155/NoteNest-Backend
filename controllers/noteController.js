@@ -15,11 +15,13 @@ const {
     getAllDeletedFilteredSortedNotesService,
     getAllArchivedFilteredSortedNotesService,
     updateNoteColorAndShadeService,
+    deleteCategoryService,
 } = require("../services/noteServices.js");
 
 const asyncHandlerMiddleware = require("../middlewares/asyncHolderMiddleware.js");
 const { createNoteSchema, updateNoteSchema, createCategorySchema, updateCategorySchema, updateNoteColorSchema } = require("../validators/noteValidators.js");
 const validateId = require("../helpers/validateId.js");
+const { success } = require("zod/v4");
 
 exports.createNoteController = asyncHandlerMiddleware(async (req, res) => {
     const validatedData = createNoteSchema.parse(req.body);
@@ -393,4 +395,26 @@ exports.updateCategoryController = asyncHandlerMiddleware(async (req, res) => {
         message: "Category updated successfully",
         data: updatedCategory,
     });
+})
+
+exports.deleteCategoryController = asyncHandlerMiddleware(async (req, res) => {
+    const categoryId = req.params.id;
+    const userId = req.user.id;
+
+    const category = await deleteCategoryService(categoryId, userId)
+    
+    if(!category){
+        return res.status(404).json({
+            success: false,
+            message: "category not found",
+            data: null,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Category deleted successfully",
+        data: null,
+    })
+
 })
